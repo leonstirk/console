@@ -127,11 +127,13 @@ The landlord and tenant sign here to show that they have read, understand, and a
 
 \vspace{30mm}
 
-Signed by: \_\_\_\_\_\_\_\_\_\_\_\_\_
+\infoTwoCol{Signed by:}
 
-Landlord
+\begin{center}Landlord\end{center}
 
-Date signed: \_\_\_\_\_\_\_\_\_\_\_\_\_
+\infoTwoCol{Date signed:}
+
+\vspace{10mm}
 
 \end{multicols}
 

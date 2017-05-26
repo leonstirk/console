@@ -5,4 +5,4 @@ rm *.gz
 
 rm *~
 
-# rm *.tex
+rm *.tex

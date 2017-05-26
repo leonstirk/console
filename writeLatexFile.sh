@@ -3,11 +3,11 @@
 DATE=`date +"%d_%m_%y"`
 
 # # Uncomment in production
-# echo "Enter address:"
-# read ADDRESS
+echo "Enter address:"
+read ADDRESS
 
 # Delete the following line in production
-ADDRESS="4 Athol Place"
+# ADDRESS="4 Athol Place"
 ADDRESSTAG="$(echo -e "${ADDRESS}" | tr -d '[:space:]')"
 
 echo
@@ -19,6 +19,7 @@ echo "Move-in inspection             [5]"
 echo "Routine inspection             [6]"
 echo "Rental income statement        [7]"
 echo "Annual rental summary          [8]"
+echo "Tenancy information pack       [9]"
 echo
 read -p "Enter number corresponding to document to produce " -n 1 -r
 echo ""
@@ -58,6 +59,11 @@ case $DOCNUM in
     [8])
 	DOCNAME="Annual rental summary"
 	DOCTAG="ARS"
+	;;
+    [9])
+	DOCNAME="Tenancy information pack"
+	DOCTAG="TIP"
+	    
 esac
 
 echo "Generate:"
@@ -104,6 +110,7 @@ cat >> $TEXFILENAME <<EOF
 \sectionfont{\color{ascroft}}
 \subsectionfont{\color{ascroft}}
 \subsubsectionfont{\color{ascroft}}
+\paragraphfont{\color{ascroft}}
 
 % No paragraph indentation
 \parindent0pt
@@ -212,6 +219,9 @@ case $DOCNUM in
 	;;
     [8])
 	. ./ARS.sh
+	;;
+    [9])
+	. ./TIP.sh
 	;;
 esac
 
