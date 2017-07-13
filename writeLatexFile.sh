@@ -1,13 +1,22 @@
 #!/bin/bash
 
+./clean.sh
+
+INFO=info.csv
+
 DATE=`date +"%d_%m_%y"`
+NICEDATE=`date +"%d/%m/%Y"`
+PREVDATE=$(cat $INFO | cut -f7 -d,)
+echo $PREVDATE
 
-# # Uncomment in production
-echo "Enter address:"
-read ADDRESS
+ADDRESS=$(cat $INFO | cut -f1 -d,)
+SUBURB=$(cat $INFO | cut -f2 -d,)
+CITY=$(cat $INFO | cut -f3 -d,)
+POSTCODE=$(cat $INFO | cut -f4 -d,)
+STNO=$(cat $INFO | cut -f5 -d,)
+RENT=$(cat $INFO | cut -f6 -d,)
+RENTALINC=$(bc <<< "$RENT*4")
 
-# Delete the following line in production
-# ADDRESS="4 Athol Place"
 ADDRESSTAG="$(echo -e "${ADDRESS}" | tr -d '[:space:]')"
 
 echo
@@ -70,11 +79,6 @@ echo "Generate:"
 echo "  - "$DOCNAME
 echo "  - "$DATE"_"$ADDRESSTAG"_"$DOCTAG
 echo ""
-
-# # Uncomment in production
-# read -p "Proceed? [Y/n] " -n 1 -r
-# echo ""
-# [[ $REPLY == "y" ]] || { echo "Aborting..."; exit 0; } 
 
 FILENAME=$DATE"_"$ADDRESSTAG"_"$DOCTAG
 TEXFILENAME=$FILENAME".tex"
@@ -146,6 +150,7 @@ cat >> $TEXFILENAME <<EOF
 \usepackage{tabularx}
 \usepackage[table]{xcolor}
 \usepackage{array}
+\newcolumntype{R}[1]{>{\RaggedLeft\arraybackslash}p{#1}}
 
 \cfoot{\footnotesize \textcolor{ascroft}{Ascroft Property Management} 11/35 Tennyson Street, Dunedin, 9016 Ph: 021 034 2105 E: info@ascroftproperty.co.nz}
 
@@ -216,6 +221,10 @@ case $DOCNUM in
 	;;
     [7])
 	. ./RIS.sh
+
+	# If RIS or ARS (recurring statements) increase statement counter
+	STNO=$(($STNO+1))
+	PREVDATE=$(date -r `expr $(date +%s) + 86400` "+%d/%m/%Y")
 	;;
     [8])
 	. ./ARS.sh
@@ -231,19 +240,9 @@ cat >> $TEXFILENAME <<EOF
 EOF
 
 # output to pdf file
-pdflatex $TEXFILENAME
+pdflatex -interaction=batchmode $TEXFILENAME
 open $FILENAME".pdf"
 
-# If RI or ARS (recurring statements) increase statement counter
-STNO=$(cat 4AtholInfo.csv | cut -f1 -d,)
-RENT=$(cat 4AtholInfo.csv | cut -f2 -d,)
-
-NUM=$(($STNO+1))
-echo $NUM
-echo $RENT
-echo $NUM,$RENT > tmp.csv
-rm 4AtholInfo.csv
-mv tmp.csv 4AtholInfo.csv
-
-# cleanup
-./clean.sh
+echo $ADDRESS,$SUBURB,$CITY,$POSTCODE,$STNO,$RENT,$PREVDATE > tmp.csv
+rm info.csv
+mv tmp.csv info.csv

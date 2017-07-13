@@ -3,51 +3,52 @@
 cat >> $TEXFILENAME <<EOF
 
 \section*{Rental Income Statement}
+\subsection*{\infoCircle{Statement Number:}{$STNO}}
+\subsubsection*{\infoCircle{Period beginning:}{$PREVDATE}}\\\\
+\subsubsection*{\infoCircle{Period ending:}{$NICEDATE}}\\\\
 
-\subsection*{Statement Number: $STNO}
- 
+
 \setlength{\arrayrulewidth}{1pt}
 \setlength{\tabcolsep}{18pt}
 \renewcommand{\arraystretch}{1.2}
-
 {\rowcolors{2}{white}{gray!5!}
-\begin{tabular}{ |p{3cm}|p{3cm}|p{3cm}|p{3cm}| }
-\hline
-Item & Unit price & Quantity & Total \\\\
-\hline
-\hline
+ \begin{tabular}{p{6cm} R{20mm} R{15mm} R{15mm}}
+ Item & Unit price & Quantity & Total \\\\
+ \hline
 
 EOF
 
 IFS=","
-i=0
-outgoings=0
-while read item price qt
+I=0
+OUTGOINGS=0
+while read ITEM PRICE QUANTITY
 do
-    total=$(($price * $qt))
-    
-    cat >> $TEXFILENAME <<EOF
-$item & $price & $qt & $total \\\\
-EOF
+    TOTAL=$(bc <<< "$PRICE*$QUANTITY")
 
-    i=$i+1
-    outgoings=$((outgoings+$total))
-done < 4AtholBilling.csv
+    cat >> $TEXFILENAME <<EOF
+$ITEM & $PRICE & $QUANTITY & $TOTAL \\\\
+EOF
+    
+    I=$I+1
+    OUTGOINGS=$(bc <<< "$OUTGOINGS+$TOTAL")
+done < billing.csv
+
+NETINC=$(bc <<< $RENTALINC-$OUTGOINGS)
 
 cat >> $TEXFILENAME <<EOF
-
-\hline
-\end{tabular}
+ \end{tabular}
 }
 
+\vspace{5mm}
+
 {\rowcolors{1}{white}{gray!5}
-\begin{tabular}{ |p{3cm}|p{3cm}| }
-\hline
-Rental income & $RENTALINC \\\\
-Outgoings & $outgoings \\\\
-Net income & $(($RENTALINC-$outgoings)) \\\\
-\hline
-\end{tabular}
+ \begin{tabular}{p{6cm} R{15mm}}
+ Summary & \\\\
+ \hline
+ Rental income & $RENTALINC \\\\
+ Outgoings & $OUTGOINGS \\\\
+ Net income & $NETINC \\\\
+ \end{tabular}
 }
 
 EOF

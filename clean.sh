@@ -1,8 +1,8 @@
-rm *.aux
-rm *.log
-rm *.pdf
-rm *.gz
+rm -f *.aux
+rm -f *.log
+rm -f *.pdf
+rm -f *.gz
 
-rm *~
+rm -f *~
 
-rm *.tex
+rm -f *.tex
