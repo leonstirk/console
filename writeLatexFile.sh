@@ -6,15 +6,23 @@ INFO=info.csv
 
 DATE=`date +"%d_%m_%y"`
 NICEDATE=`date +"%d/%m/%Y"`
-PREVDATE=$(cat $INFO | cut -f7 -d,)
-echo $PREVDATE
+
 
 ADDRESS=$(cat $INFO | cut -f1 -d,)
 SUBURB=$(cat $INFO | cut -f2 -d,)
 CITY=$(cat $INFO | cut -f3 -d,)
 POSTCODE=$(cat $INFO | cut -f4 -d,)
 STNO=$(cat $INFO | cut -f5 -d,)
-RENT=$(cat $INFO | cut -f6 -d,)
+ASTNO=$(cat $INFO | cut -f6 -d,)
+RENT=$(cat $INFO | cut -f7 -d,)
+PREVDATE=$(cat $INFO | cut -f8 -d,)
+ACCNAME=$(cat $INFO | cut -f9 -d,)
+ACCREF=$(cat $INFO | cut -f10 -d,)
+ACCADDRESS=$(cat $INFO | cut -f11 -d,)
+ACCSUBURB=$(cat $INFO | cut -f12 -d,)
+ACCCITY=$(cat $INFO | cut -f13 -d,)
+ACCPOSTCODE=$(cat $INFO | cut -f14 -d,)
+
 RENTALINC=$(bc <<< "$RENT*4")
 
 ADDRESSTAG="$(echo -e "${ADDRESS}" | tr -d '[:space:]')"
@@ -135,10 +143,6 @@ cat >> $TEXFILENAME <<EOF
 \setenumerate[1]{label=(\alph*)}
 \setenumerate[0]{label=(\roman*)}
 
-% Support multiple columns
-\usepackage{multicol}
-\setlength{\columnsep}{1cm}
-
 % fancyhdr headers and footers
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -150,6 +154,13 @@ cat >> $TEXFILENAME <<EOF
 \usepackage{tabularx}
 \usepackage[table]{xcolor}
 \usepackage{array}
+\usepackage{hhline}
+
+% Support multiple columns
+\usepackage{multicol}
+\setlength{\columnsep}{1cm}
+\usepackage{multirow}
+
 \newcolumntype{R}[1]{>{\RaggedLeft\arraybackslash}p{#1}}
 
 \cfoot{\footnotesize \textcolor{ascroft}{Ascroft Property Management} 11/35 Tennyson Street, Dunedin, 9016 Ph: 021 034 2105 E: info@ascroftproperty.co.nz}
@@ -243,6 +254,6 @@ EOF
 pdflatex -interaction=batchmode $TEXFILENAME
 open $FILENAME".pdf"
 
-echo $ADDRESS,$SUBURB,$CITY,$POSTCODE,$STNO,$RENT,$PREVDATE > tmp.csv
+echo $ADDRESS,$SUBURB,$CITY,$POSTCODE,$STNO,$ASTNO,$RENT,$PREVDATE,$ACCNAME,$ACCREF,$ACCADDRESS,$ACCSUBURB,$ACCCITY,$ACCPOSTCODE > tmp.csv
 rm info.csv
 mv tmp.csv info.csv

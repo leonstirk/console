@@ -3,16 +3,23 @@
 cat >> $TEXFILENAME <<EOF
 
 \section*{Rental Income Statement}
-\subsection*{\infoCircle{Statement Number:}{$STNO}}
-\subsubsection*{\infoCircle{Period beginning:}{$PREVDATE}}\\\\
-\subsubsection*{\infoCircle{Period ending:}{$NICEDATE}}\\\\
 
+\setlength{\arrayrulewidth}{2pt}
+\setlength{\tabcolsep}{10pt}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{@{}lp{6.5cm}lr@{}}
 
-\setlength{\arrayrulewidth}{1pt}
-\setlength{\tabcolsep}{18pt}
-\renewcommand{\arraystretch}{1.2}
-{\rowcolors{2}{white}{gray!5!}
- \begin{tabular}{p{6cm} R{20mm} R{15mm} R{15mm}}
+  Account name: & $ACCNAME & Account Reference: & $ACCREF\\\\
+  & $ACCADDRESS & Statement from: & $PREVDATE\\\\
+  & $ACCSUBURB & Statement to: & $NICEDATE\\\\
+  & $ACCCITY $ACCPOSTCODE & Statement Number: & $STNO\\\\
+
+\end{tabularx}
+
+\vspace{2cm}
+
+ {\rowcolors{3}{white}{gray!5!}
+ \begin{tabularx}{\textwidth}{X R{20mm} R{15mm} R{15mm}}
  Item & Unit price & Quantity & Total \\\\
  \hline
 
@@ -26,7 +33,7 @@ do
     TOTAL=$(bc <<< "$PRICE*$QUANTITY")
 
     cat >> $TEXFILENAME <<EOF
-$ITEM & $PRICE & $QUANTITY & $TOTAL \\\\
+$ITEM & \\\$$PRICE & $QUANTITY & \\\$$TOTAL \\\\
 EOF
     
     I=$I+1
@@ -36,18 +43,19 @@ done < billing.csv
 NETINC=$(bc <<< $RENTALINC-$OUTGOINGS)
 
 cat >> $TEXFILENAME <<EOF
- \end{tabular}
-}
+ \end{tabularx}
+ }
 
-\vspace{5mm}
+\vspace{1cm}
 
-{\rowcolors{1}{white}{gray!5}
+\setlength{\arrayrulewidth}{1pt}
+{\rowcolors{2}{white}{gray!5}
  \begin{tabular}{p{6cm} R{15mm}}
  Summary & \\\\
  \hline
- Rental income & $RENTALINC \\\\
- Outgoings & $OUTGOINGS \\\\
- Net income & $NETINC \\\\
+ Rental income & \\\$$RENTALINC \\\\
+ Outgoings & \\\$$OUTGOINGS \\\\
+ Net income & \\\$$NETINC \\\\
  \end{tabular}
 }
 
