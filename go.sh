@@ -4,16 +4,17 @@
 
 INFO=info.csv
 
-MAKEDATE=`date +"%d_%m_%y"`
-
-read -p "Period end date: DD/MM/YYYY"
-echo $REPLY
+read -p "Make date (YYYY-MM-DD): "
 
 if [ -n $REPLY ]
 then
-    ENDDATE=$REPLY
+    TODAY=$(date -j -f "%F" $REPLY +"%s")
+    MAKEDATE=$(date -r $TODAY "+%d_%m_%y")
+    ENDDATE=$(date -r $(($TODAY - 86400)) "+%d/%m/%Y")
 else
-    ENDDATE=$(date -r `expr $(date +%s) + 86400` "+%d/%m/%Y")
+    TODAY=$(date "+%s")
+    MAKEDATE=$(date -r $TODAY "+%d_%m_%y")
+    ENDDATE=$(date -r $(($TODAY - 86400)) "+%d/%m/%Y")
 fi
 
 ADDRESS=$(cat $INFO | cut -f1 -d,)
@@ -24,12 +25,13 @@ STNO=$(cat $INFO | cut -f5 -d,)
 ASTNO=$(cat $INFO | cut -f6 -d,)
 RENT=$(cat $INFO | cut -f7 -d,)
 STARTDATE=$(cat $INFO | cut -f8 -d,)
-ACCNAME=$(cat $INFO | cut -f9 -d,)
-ACCREF=$(cat $INFO | cut -f10 -d,)
-ACCADDRESS=$(cat $INFO | cut -f11 -d,)
-ACCSUBURB=$(cat $INFO | cut -f12 -d,)
-ACCCITY=$(cat $INFO | cut -f13 -d,)
-ACCPOSTCODE=$(cat $INFO | cut -f14 -d,)
+ASTARTDATE=$(cat $INFO | cut -f9 -d,)
+ACCNAME=$(cat $INFO | cut -f10 -d,)
+ACCREF=$(cat $INFO | cut -f11 -d,)
+ACCADDRESS=$(cat $INFO | cut -f12 -d,)
+ACCSUBURB=$(cat $INFO | cut -f13 -d,)
+ACCCITY=$(cat $INFO | cut -f14 -d,)
+ACCPOSTCODE=$(cat $INFO | cut -f15 -d,)
 
 RENTALINC=$(bc <<< "$RENT*4")
 
@@ -240,10 +242,6 @@ case $DOCNUM in
 	;;
     [7])
 	. ./RIS.sh
-
-	# If RIS or ARS (recurring statements) increase statement counter
-	STNO=$(($STNO+1))
-	STARTDATE=`date +"%d/%m/%Y"`
 	;;
     [8])
 	. ./ARS.sh
@@ -260,8 +258,48 @@ EOF
 
 # output to pdf file
 pdflatex -interaction=batchmode $TEXFILENAME
-open $FILENAME".pdf"
 
-echo $ADDRESS,$SUBURB,$CITY,$POSTCODE,$STNO,$ASTNO,$RENT,$STARTDATE,$ACCNAME,$ACCREF,$ACCADDRESS,$ACCSUBURB,$ACCCITY,$ACCPOSTCODE > tmp.csv
+case $DOCNUM in
+    [1])
+	echo "PMA"
+	;;
+    [2])
+	echo "PTA"
+	;;
+    [3])
+	echo "TA"
+	;;
+    [4])
+	echo "EXT"
+	;;
+    [5])
+	echo "MI"
+	;;
+    [6])
+	echo "RI"
+	;;
+    [7])
+	echo "RIS"
+	mv $FILENAME.pdf ../RIS/$STNO"_"$FILENAME".pdf"
+	STNO=$(( $STNO+1 ))
+	STNO=$( printf '%03d' $STNO );
+	STARTDATE=$(date -r $TODAY "+%d/%m/%Y")
+	open ../RIS/*.pdf
+	;;
+    [8])
+	echo "ARS"
+	mv $FILENAME.pdf ../ARS/$ASTNO"_"$FILENAME".pdf"
+	ASTNO=$(( $ASTNO+1 ))
+	ASTNO=$( printf '%03d' $ASTNO );
+	ASTARTDATE=$(date -r $TODAY "+%d/%m/%y")
+	open ../ARS/*.pdf
+	;;
+    [9])
+	echo "TIP"
+	;;
+esac
+
+echo $ADDRESS,$SUBURB,$CITY,$POSTCODE,$STNO,$ASTNO,$RENT,$STARTDATE,$ASTARTDATE,$ACCNAME,$ACCREF,$ACCADDRESS,$ACCSUBURB,$ACCCITY,$ACCPOSTCODE > tmp.csv
 rm info.csv
 mv tmp.csv info.csv
+
