@@ -10,8 +10,8 @@ cat >> $TEXFILENAME <<EOF
 \begin{tabularx}{\textwidth}{@{}lp{6.5cm}lr@{}}
 
   Account name: & $ACCNAME & Account Reference: & $ACCREF\\\\
-  & $ACCADDRESS & Statement from: & $PREVDATE\\\\
-  & $ACCSUBURB & Statement to: & $NICEDATE\\\\
+  & $ACCADDRESS & Statement from: & $STARTDATE\\\\
+  & $ACCSUBURB & Statement to: & $ENDDATE\\\\
   & $ACCCITY $ACCPOSTCODE & Statement Number: & $STNO\\\\
 
 \end{tabularx}

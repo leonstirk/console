@@ -4,9 +4,17 @@
 
 INFO=info.csv
 
-DATE=`date +"%d_%m_%y"`
-NICEDATE=`date +"%d/%m/%Y"`
+MAKEDATE=`date +"%d_%m_%y"`
 
+read -p "Period end date: DD/MM/YYYY"
+echo $REPLY
+
+if [ -n $REPLY ]
+then
+    ENDDATE=$REPLY
+else
+    ENDDATE=$(date -r `expr $(date +%s) + 86400` "+%d/%m/%Y")
+fi
 
 ADDRESS=$(cat $INFO | cut -f1 -d,)
 SUBURB=$(cat $INFO | cut -f2 -d,)
@@ -15,7 +23,7 @@ POSTCODE=$(cat $INFO | cut -f4 -d,)
 STNO=$(cat $INFO | cut -f5 -d,)
 ASTNO=$(cat $INFO | cut -f6 -d,)
 RENT=$(cat $INFO | cut -f7 -d,)
-PREVDATE=$(cat $INFO | cut -f8 -d,)
+STARTDATE=$(cat $INFO | cut -f8 -d,)
 ACCNAME=$(cat $INFO | cut -f9 -d,)
 ACCREF=$(cat $INFO | cut -f10 -d,)
 ACCADDRESS=$(cat $INFO | cut -f11 -d,)
@@ -85,10 +93,10 @@ esac
 
 echo "Generate:"
 echo "  - "$DOCNAME
-echo "  - "$DATE"_"$ADDRESSTAG"_"$DOCTAG
+echo "  - "$MAKEDATE"_"$ADDRESSTAG"_"$DOCTAG
 echo ""
 
-FILENAME=$DATE"_"$ADDRESSTAG"_"$DOCTAG
+FILENAME=$MAKEDATE"_"$ADDRESSTAG"_"$DOCTAG
 TEXFILENAME=$FILENAME".tex"
 
 # create file #
@@ -235,7 +243,7 @@ case $DOCNUM in
 
 	# If RIS or ARS (recurring statements) increase statement counter
 	STNO=$(($STNO+1))
-	PREVDATE=$(date -r `expr $(date +%s) + 86400` "+%d/%m/%Y")
+	STARTDATE=`date +"%d/%m/%Y"`
 	;;
     [8])
 	. ./ARS.sh
@@ -254,6 +262,6 @@ EOF
 pdflatex -interaction=batchmode $TEXFILENAME
 open $FILENAME".pdf"
 
-echo $ADDRESS,$SUBURB,$CITY,$POSTCODE,$STNO,$ASTNO,$RENT,$PREVDATE,$ACCNAME,$ACCREF,$ACCADDRESS,$ACCSUBURB,$ACCCITY,$ACCPOSTCODE > tmp.csv
+echo $ADDRESS,$SUBURB,$CITY,$POSTCODE,$STNO,$ASTNO,$RENT,$STARTDATE,$ACCNAME,$ACCREF,$ACCADDRESS,$ACCSUBURB,$ACCCITY,$ACCPOSTCODE > tmp.csv
 rm info.csv
 mv tmp.csv info.csv
