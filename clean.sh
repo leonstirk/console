@@ -7,5 +7,5 @@ rm -f *~
 
 rm -f *.tex
 
-rm -f ../RIS/*
-rm -f ../ARS/*
+#rm -f ../RIS/*
+#rm -f ../ARS/*

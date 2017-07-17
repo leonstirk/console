@@ -6,7 +6,7 @@ cat >> $TEXFILENAME <<EOF
 
 \subsection*{Tenancy details}
 
-\info{Property address}
+\infoCircle{Property address}{$ADDRESS, $SUBURB, $CITY, $POSTCODE}
 
 \info{Commencement of tenancy}
 
@@ -24,8 +24,6 @@ cat >> $TEXFILENAME <<EOF
 
 \info{Length of current tenancy}
 
-\info{Please state why you are leaving}
-
 \clearpage
 
 \subsection*{Identification}
@@ -33,6 +31,8 @@ cat >> $TEXFILENAME <<EOF
 \textit{Please provide a copy of photo identification, such as your driver's license.}
 
 \info{Driver's license number}
+
+\info{Driver's license version}
 
 \textit{Note that provision of this number is voluntary and will only be used to verify your identity when carrying out a credit check}
 
