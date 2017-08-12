@@ -2,7 +2,7 @@
 
 ./clean.sh
 
-INFO=info.csv
+INFO=../info.csv
 
 read -p "Make date (YYYY-MM-DD): "
 
@@ -284,7 +284,7 @@ case $DOCNUM in
 	STNO=$(( $STNO+1 ))
 	STNO=$( printf '%03d' $STNO );
 	STARTDATE=$(date -r $TODAY "+%d/%m/%Y")
-	open ../RIS/*.pdf
+	open ../RIS/$STNO"_"$FILENAME".pdf"
 	;;
     [8])
 	echo "ARS"
@@ -292,7 +292,7 @@ case $DOCNUM in
 	ASTNO=$(( $ASTNO+1 ))
 	ASTNO=$( printf '%03d' $ASTNO );
 	ASTARTDATE=$(date -r $TODAY "+%d/%m/%y")
-	open ../ARS/*.pdf
+	open ../ARS/$ASTNO"_"$FILENAME".pdf"
 	;;
     [9])
 	echo "TIP"
@@ -300,6 +300,6 @@ case $DOCNUM in
 esac
 
 echo $ADDRESS,$SUBURB,$CITY,$POSTCODE,$STNO,$ASTNO,$RENT,$STARTDATE,$ASTARTDATE,$ACCNAME,$ACCREF,$ACCADDRESS,$ACCSUBURB,$ACCCITY,$ACCPOSTCODE > tmp.csv
-rm info.csv
-mv tmp.csv info.csv
+rm ../info.csv
+mv tmp.csv ../info.csv
 

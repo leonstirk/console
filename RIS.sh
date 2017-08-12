@@ -38,7 +38,7 @@ EOF
     
     I=$I+1
     OUTGOINGS=$(bc <<< "$OUTGOINGS+$TOTAL")
-done < billing.csv
+done < ../billing.csv
 
 NETINC=$(bc <<< $RENTALINC-$OUTGOINGS)
 
