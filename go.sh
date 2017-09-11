@@ -281,18 +281,20 @@ case $DOCNUM in
     [7])
 	echo "RIS"
 	mv $FILENAME.pdf ../RIS/$STNO"_"$FILENAME".pdf"
+	open ../RIS/$STNO"_"$FILENAME".pdf"
+	STNO=$((10#$STNO))
 	STNO=$(( $STNO+1 ))
 	STNO=$( printf '%03d' $STNO );
 	STARTDATE=$(date -r $TODAY "+%d/%m/%Y")
-	open ../RIS/$STNO"_"$FILENAME".pdf"
 	;;
     [8])
 	echo "ARS"
 	mv $FILENAME.pdf ../ARS/$ASTNO"_"$FILENAME".pdf"
+	open ../ARS/$ASTNO"_"$FILENAME".pdf"
+	ASTNO=$((10#$ASTNO))
 	ASTNO=$(( $ASTNO+1 ))
 	ASTNO=$( printf '%03d' $ASTNO );
 	ASTARTDATE=$(date -r $TODAY "+%d/%m/%y")
-	open ../ARS/$ASTNO"_"$FILENAME".pdf"
 	;;
     [9])
 	echo "TIP"
